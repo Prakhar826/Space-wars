@@ -1,0 +1,331 @@
+/* --- Custom Font --- */
+@font-face {
+    font-family: 'Frankfurter';
+    src: url('../fonts/Frankfurter.ttf') format('truetype');
+}
+
+/* --- Basic Setup --- */
+* { box-sizing: border-box; }
+body {
+    background-color: #000; margin: 0;
+    font-family: 'Frankfurter', 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+    color: white;
+    display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none;     /* IE 10 and Edge */
+    user-select: none;         /* Standard syntax */
+}
+
+#game-container { position: relative; box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); display: flex; border-radius: 25px; }
+#gameDiv { position: relative; overflow: hidden; cursor: none; border-radius: 0px; }
+/* NEW: Rule to make cursor visible during popups */
+#gameDiv.cursor-visible {
+    cursor: default;
+}
+
+/* --- Layout Rules --- */
+@media (orientation: portrait) { #gameDiv { width: 100vw; height: 100vh; } }
+@media (orientation: landscape) { #gameDiv { height: 100vh; width: calc(100vh * (1800 / 750)); max-width: 100vw; } }
+@media (min-width: 1200px) and (orientation: landscape) { #gameDiv { width: 1800px; height: 750px; } }
+
+/* --- Game Over Screen --- */
+#gameOver { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; max-width: 400px; padding: 20px; background: rgba(0, 0, 0, 0.7); border: 2px solid #fff; border-radius: 10px; text-align: center; display: none; z-index: 30; }
+#gameOver p { margin: 10px 0; font-size: calc(12px + 2vmin); } #gameOver #msg { font-size: calc(18px + 4vmin); font-weight: bold; }
+#gameOver #gameOverStats { font-size: calc(10px + 1.8vmin); color: #ffd700; margin-top: 5px; margin-bottom: 15px; text-shadow: 1px 1px 3px #000; }
+#restartbtn { padding: 10px 20px; font-size: calc(10px + 1.5vmin); color: #fff; background-color: #007bff; border: 2px solid #fff; border-radius: 5px; cursor: pointer; }
+#restartbtn:hover { background-color: #0056b3; }
+
+/* --- Background Layers --- */
+.bg-layer { position: absolute; left: 0; width: 100%; background-size: cover; background-position: center top; background-repeat: no-repeat; z-index: 1; }
+
+/* ================= ACCURATE IN-GAME UI STYLES START ================= */
+#ui-top {
+    position: absolute; top: 0; left: 0; width: 100%; padding: 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 50; pointer-events: none;
+}
+#ui-controls { display: flex; gap: 10px; }
+.ui-button {
+    width: 55px; height: 55px; background-color: transparent; border: none;
+    background-size: contain; background-repeat: no-repeat; background-position: center;
+    cursor: pointer; pointer-events: all; transition: transform 0.1s ease;
+
+}
+.ui-button:active { transform: scale(0.9); }
+#musicBtn { background-image: url('../Ui/music_button.png'); }
+#soundBtn { background-image: url('../Ui/sound_button.png'); }
+#pauseBtn { background-image: url('../Ui/pause_button.png'); }
+.paused { background-image: url('../Ui/play_button.png') !important; }
+.muted { opacity: 0.5; }
+#ui-stats { display: flex; flex-direction: column; align-items: flex-end; gap: 16px; }
+#currency-container { display: flex; gap: 20px; }
+.stat-panel {
+    width: 150px; height: 60px; background-size: 100% 100%;
+    display: flex; justify-content: flex-end; align-items: center; padding-right: 25px;
+}
+#diamond-container { background-image: url('../Ui/diamond_panel.png'); }
+#coin-container { background-image: url('../Ui/coin_panel.png'); }
+#diamond-container #diamondCountLabel { margin-right: 10px; }
+#lives-score-container {
+    display: flex; align-items: center;
+    justify-content: space-between; 
+    background-color: #5c92ff79;
+    border-radius: 90px; padding: 5px 20px;
+    height: 48px;
+    min-width: 180px; 
+    width: 97%;
+}
+#livesDiv { display: flex; align-items: center; gap: 5px; }
+#ui-top span, #ui-top label { font-size: 24px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.6); }
+
+/* --- MOBILE RESPONSIVE LAYOUT --- */
+@media (orientation: portrait) {
+    #ui-top {
+        flex-direction: column; align-items: center; gap: 10px;
+        height: auto; margin-top: 25px;
+    }
+    #ui-stats {
+        order: 1; flex-direction: column; align-items: center; width: 85%;
+    }
+    #lives-score-container {
+        order: 1; justify-content: space-between;
+        height: calc(40px + 2.5vmin); width: 95%;
+    }
+    #currency-container {
+        order: 2; width: 100%; justify-content: space-around; height: auto;
+    }
+    .stat-panel {
+        width: 48%;
+        height: calc(45px + 4vw);
+        font-size: calc(18px + 2.5vw);
+    }
+    #ui-controls { display: none; }
+    #ui-top #livesDiv img { height: calc(20px + 2.5vmin); margin: 2.5px; }
+    #ui-top span, #ui-top label { font-size: calc(20px + 2.5vmin);  }
+  
+}
+/* ================= UI STYLES END ================= */
+
+/* --- Game Object & Global Image Styling --- */
+#gameDiv img {
+    position: absolute; z-index: 10;
+}
+/* This rule fixes the single-heart bug by overriding the rule above */
+#ui-top img {
+    position: relative !important; z-index: auto; height: 28px; width: auto;
+}
+
+
+.explosion { position: absolute; background-image: url('../images/explosion.png'); background-repeat: no-repeat; z-index: 15; }
+#shieldBubble { z-index: 9; opacity: 0.7; border-radius: 50%; }
+.plane-glow { filter: drop-shadow(0 0 12px yellow); transition: filter 0.1s ease-out; }
+.power-up-item { animation: pulse-glow 2s infinite ease-in-out; }
+@keyframes pulse-glow { 0% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4)); } 50% { transform: scale(1.1); filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.9)); } 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4)); } }
+.invincible-flash { animation: flash 0.2s infinite; }
+@keyframes flash { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+/* ================= REVIVAL POPUP STYLES START ================= */
+.revival-popup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 380px;
+    height: 420px;
+    background-image: url('../Ui/revival_popup.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    color: #954c05;
+    font-weight: bold;
+   
+}
+
+.revival-timer {
+    font-size: 36px;
+    margin-top: 75px;
+    padding-right: 40px;
+}
+
+.revival-offer-text {
+    font-size: 80px;
+    font-weight: bold;
+    color: #954c05;
+    margin-top: 45px;
+}
+
+.bonus-offer-subtext {
+    font-size: 24px;
+    margin-top: -10px;
+}
+
+.revival-buttons {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: auto;
+    margin-bottom: 50px;
+}
+
+/* --- THIS IS THE DEFINITIVE FIX FOR THE BUTTONS --- */
+.revival-buttons button {
+    /* Set size and remove default browser styles */
+    width: 140px;
+    height: 70px;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    background-color: transparent;
+    
+    /* Apply image as a background */
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    
+}
+
+/* Assign the specific background images to each button */
+#revive-diamond-btn, #bonus-diamond-btn {
+    background-image: url('../Ui/diamond_button.png');
+    margin-right: -60px;;
+}
+#revive-ad-btn, #bonus-ad-btn {
+    background-image: url('../Ui/ad_button.png');
+}
+
+/* Style the text container (the span) */
+.revival-buttons button span {
+    /* Flexbox for perfect vertical and horizontal centering */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+
+    /* Text styling */
+    font-size: 25px;
+    font-family: 'Frankfurter', sans-serif;
+    color: #ffffff;
+    padding-left: 76px;
+    
+}
+
+#skip-bonus-btn {
+    /* Remove old text-button styles */
+    border: none;
+    padding: 0;
+
+    /* Apply the new image as a background */
+    background-image: url('../Ui/skip.png'); /* <-- Make sure this filename is correct! */
+    background-color: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    
+    /* Define the size of the button */
+    width: 120px;
+    height: 50px;
+    
+    /* Keep these from the old button */
+    cursor: pointer;
+    margin-top: -35px;
+
+    /* Add a nice click effect */
+    transition: transform 0.1s ease;
+}
+
+.nothing{
+
+     width: 120px;
+    height: 50px;
+    
+    /* Keep these from the old button */
+    cursor: pointer;
+    margin-top: -20px;
+
+}
+
+#skip-bonus-btn:active {
+    transform: scale(0.95);
+}
+
+#revival-popup-2{
+    background-image: url('../Ui/popup_2.png');
+}
+
+/* Animation for button feedback */
+.shake-error {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+    20%, 40%, 60%, 80% { transform: translateX(8px); }
+}
+/* ======================= REVIVAL STYLES END ======================= */
+
+
+.button:active { transform: scale(0.9); }
+
+/* ================= NEW POPUP STYLES START ================= */
+#settingsPopup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(250px, 50vw, 450px);
+    height: clamp(250px, 50vw, 450px);
+    background-image: url('../Ui/Score_panel.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#closeSettingsBtn {
+    position: absolute;
+    top: 3%;
+    right: 3%;
+    width: 65px;
+    height: 65px;
+    background-image: url('../Ui/close_button.png');
+}
+.popup-buttons-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 45px;
+    width: 55%;
+}
+.popup-btn {
+    width: 100%;
+    padding-bottom: 100%; /* Creates a square aspect ratio */
+    position: relative;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+#infoBtnPopup { background-image: url('../Ui/info_button.png'); }
+#shopBtnPopup { background-image: url('../Ui/shop_button.png'); }
+#soundBtnPopup { background-image: url('../Ui/sound_button.png'); }
+#musicBtnPopup { background-image: url('../Ui/music_button.png'); }
+
+/* ================== NEW POPUP STYLES END ================== */
+/* --- NEW: Prevents users from selecting or dragging images --- */
+img {
+    -webkit-user-drag: none; /* Prevents dragging on Chrome/Safari */
+    user-select: none;       /* Standard property to prevent selection */
+    -moz-user-select: none;    /* Firefox */
+    -webkit-user-select: none; /* Chrome/Safari */
+    -ms-user-select: none;     /* IE/Edge */
+}

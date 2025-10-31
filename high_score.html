@@ -457,9 +457,9 @@ img {
     
     document.addEventListener('visibilitychange', function() {
         if (document.hidden) {
-            music.muted = true;
+            musicSound.muted = true;
         } else {
-            music.muted = localStorage.getItem('isMusicMuted') === 'true';
+            musicSound.muted = localStorage.getItem('isMusicMuted') === 'true';
         }
     });
     
@@ -551,4 +551,5 @@ adBtn.addEventListener('click', () => {
     window.addEventListener('contextmenu', e => e.preventDefault());
 </script>
 </body>
+
 </html>

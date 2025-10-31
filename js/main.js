@@ -701,12 +701,8 @@ document.addEventListener('visibilitychange', function() {
     
 });
     initGame();
-    // --- NEW: Tell the SDK that gameplay has started ---
-    CrazyGames.SDK.game.gameplayStart();
-    console.log("Gameplay Start event sent.");
-
-    document.getElementById('loading-overlay').style.display = 'none'; // Hide our custom loader
-    CrazyGames.SDK.game.loadingStop();
+    // Hide the loading overlay now that the game is ready
+    document.getElementById('loading-overlay').style.display = 'none';
 }
 
 
@@ -812,15 +808,18 @@ function attemptBonusWithDiamonds() {
 }
 
 function attemptBonusWithAd() {
-    console.log("Requesting Rewarded Ad for Bonus...");
-    CrazyGames.SDK.ad.requestAd("rewarded", {
-        adStarted: () => console.log("Ad Started"),
-        adFinished: () => {
-            console.log("Ad Finished, granting bonus reward.");
-            playerLives += 2; // The bonus is 2 lives
-            resumeGameAfterRevive();
+    console.log("Google H5: Requesting Rewarded Ad for Bonus...");
+    
+    adReward({
+        beforeReward: (showAdFn) => { showAdFn(); },
+        rewardGranted: () => {
+            console.log("Reward granted for Bonus!");
+            playerLives += 2;
         },
-        adError: (error) => console.error("Ad Error:", error),
+        afterReward: () => {
+            console.log("Bonus ad flow finished.");
+            resumeGameAfterRevive();
+        }
     });
 }
 

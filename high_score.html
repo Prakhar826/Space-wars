@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>High Score Screen</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+    font-family: 'Frankfurter';
+    src: url('fonts/Frankfurter.ttf') format('truetype');
+}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      /* font-family: 'Fredoka', sans-serif; */
+      font-family: 'Frankfurter', 'Fredoka', 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+   
+      background: #000;
+      overflow: hidden;
+      position: relative;
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      touch-action: none;
+       -webkit-user-select: none; /* Safari */
+    -ms-user-select: none;     /* IE 10 and Edge */
+    user-select: none;         /* Standard syntax */
+    }
+
+    /* Backgrounds */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      z-index: -1;
+       background-image: url('Ui/desktop_background.png');
+    }
+
+
+    .container {
+      width: 90%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2vmin;
+      position: relative;
+    }
+
+    /* Top Left Buttons */
+    .top-left {
+      position: absolute;
+      top: 2vmin;
+      left: 2vmin;
+      display: flex;
+      gap: 1vmin;
+      z-index: 10;
+    }
+
+    .btn {
+      width: min(max(72px, 10vmin), 96px);
+      height: min(max(72px, 10vmin), 96px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: transparent;
+      padding: 0;
+      border: none;
+      overflow: hidden;
+    }
+
+    .btn img {
+      width: min(max(56px, 8vmin), 72px);
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    /* Top Right Close Button */
+    .top-right {
+      position: absolute;
+      top: 2vmin;
+      right: 2vmin;
+      z-index: 10;
+    }
+
+    /* Main Score Panel */
+    .score-panel {
+      text-align: center;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1vmin;
+    }
+
+    .high-score-badge {
+   width: min(max(140px, 24vmin), 180px);
+  height: auto;
+  margin-bottom: 5vmin;
+  transform: scale(1.5); /* Makes it 20% larger visually */
+  transform-origin: center;
+}
+
+    .score-number {
+      font-size: min(max(56px, 8vmin), 96px);
+      font-weight: 800;
+      color: white;
+      margin: 0.5vmin 0;
+      text-shadow: 0 0 6px rgba(0,0,0,0.6), 0 0 12px rgba(0,255,255,0.4);
+    
+    }
+
+    .high-score {
+      font-size: min(max(25px, 4vmin), 30px);
+      font-weight: 600;
+      color: white;
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      /* margin-top: 10px; */
+      text-shadow: 0 0 2px rgba(0,0,0,0.5);
+    }
+
+    .resources {
+      display: flex;
+      gap: 1vmin;
+      margin: 1vmin 0;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .resource {
+      position: relative;
+      display: inline-block;
+    }
+
+    .resource img {
+      width: min(max(140px, 22vmin), 180px);
+      height: auto;
+      max-width: 100%;
+    }
+
+    .resource span {
+      position: absolute;
+      top: 42%;
+      left: 70%;
+      transform: translate(-50%, -50%);
+      font-size: min(max(24px, 5vmin), 40px);
+      font-weight: 800;
+      color: white;
+      text-shadow: 0 0 4px rgba(0,0,0,0.6), 0 0 8px rgba(255,255,255,0.5);
+      white-space: nowrap;
+    }
+
+    .coin-multiplier {
+      font-size: min(max(28px, 5vmin), 44px);
+      font-weight: 700;
+      color: white;
+      margin: 1vmin 0;
+      text-shadow: 0 0 4px rgba(0,0,0,0.6), 0 0 8px rgba(255,255,255,0.5);
+    }
+
+    .ad-button {
+      position: relative;
+      display: inline-block;
+      background-color: transparent;
+      border: none;
+    }
+
+    .ad-button img {
+      width: min(max(160px, 24vmin), 240px);
+      height: auto;
+      cursor: pointer;
+      margin: 1vmin 0;
+    }
+
+    /* Tablet Layout Tweaks */
+    @media (min-width: 761px) and (max-width: 1023px) {
+      .container {
+        padding: 3vmin;
+      }
+
+      .top-left {
+        top: 3vmin;
+        left: 3vmin;
+      }
+
+      .top-right {
+        top: 3vmin;
+        right: 3vmin;
+      }
+
+        .high-score-badge {
+        width: min(max(180px, 24vmin), 135px);
+      }
+
+      .score-number {
+        font-size: min(max(64px, 7vmin), 40px);
+        margin-bottom: -10px;
+      }
+
+      .resource img {
+        width: min(max(150px, 22vmin), 120px);
+      }
+
+      .resource span {
+        font-size: min(max(26px, 4.5vmin), 36px);
+      }
+
+      .ad-button img {
+        width: min(max(180px, 24vmin), 100px);
+        margin-bottom: -10px;
+      }
+    }
+
+    /* Mobile Landscape / Small Tablet */
+    @media (max-width: 760px) {
+      .container {
+        padding: 2vmin;
+      }
+
+      .top-left {
+        top: 2vmin;
+        left: 2vmin;
+      }
+
+      .top-right {
+        top: 2vmin;
+        right: 2vmin;
+      }
+
+      .high-score-badge {
+        width: min(max(140px, 24vmin), 180px);
+      }
+
+      .score-number {
+        font-size: min(max(56px, 7vmin), 72px);
+      }
+
+      .resource img {
+        width: min(max(120px, 20vmin), 160px);
+      }
+
+      .resource span {
+        font-size: min(max(24px, 4.5vmin), 32px);
+      }
+
+      .ad-button img {
+        width: min(max(140px, 22vmin), 200px);
+      }
+
+      /* Ensure buttons are large enough on very small phones */
+      .btn {
+        width: 80px;
+        height: 80px;
+      }
+
+      .btn img {
+        width: 64px;
+      }
+    }
+
+    /* Ultra-Small Phones (iPhone SE, etc.) */
+    @media (max-width: 375px) {
+      .container {
+        padding: 1vmin;
+        transform: scale(1.1);
+        transform-origin: center;
+      }
+
+      .score-number {
+        font-size: min(max(56px, 8vmin), 72px);
+      }
+
+      .resource img {
+        width: min(max(100px, 18vmin), 140px);
+      }
+
+      .resource span {
+        font-size: min(max(22px, 4vmin), 30px);
+      }
+
+      .ad-button img {
+        width: min(max(120px, 20vmin), 180px);
+      }
+
+      .btn {
+        width: 80px;
+        height: 80px;
+      }
+
+      .btn img {
+        width: 64px;
+      }
+    }
+
+    /* Even Smaller Screens (if needed) */
+    @media (max-width: 320px) {
+      .container {
+        padding: 1vmin;
+        transform: scale(1.2);
+        transform-origin: center;
+      }
+
+      .score-number {
+        font-size: min(max(56px, 9vmin), 64px);
+      }
+      
+
+      .resource img {
+        width: min(max(90px, 16vmin), 120px);
+      }
+
+      .resource span {
+        font-size: min(max(20px, 3.5vmin), 28px);
+      }
+
+      .ad-button img {
+        width: min(max(100px, 18vmin), 160px);
+      }
+
+      .btn {
+        width: 80px;
+        height: 80px;
+      }
+
+      
+
+      .btn img {
+        width: 64px;
+      }
+      
+    }
+    .btn:active { transform: scale(0.9); }
+
+    /* --- NEW: Prevents users from selecting or dragging images --- */
+img {
+    -webkit-user-drag: none; /* Prevents dragging on Chrome/Safari */
+    user-select: none;       /* Standard property to prevent selection */
+    -moz-user-select: none;    /* Firefox */
+    -webkit-user-select: none; /* Chrome/Safari */
+    -ms-user-select: none;     /* IE/Edge */
+}
+
+
+  </style>
+
+  <!-- === ADD GOOGLE H5 ADS SCRIPTS HERE === -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890" crossorigin="anonymous"></script>
+
+    <script>
+        function adConfig(o) {
+            (adsbygoogle = window.adsbygoogle || []).push(o);
+        }
+    </script>
+</head>
+<body>
+
+  <!-- Top Left Buttons -->
+  <div class="top-left">
+    <div class="btn" id="highScoreMusicBtn">
+      <img src="Ui/music_button.png" alt="Music">
+    </div>
+    <div class="btn" id="highScoreSoundBtn">
+      <img src="Ui/sound_button.png" alt="Sound">
+    </div>
+  </div>
+
+  <!-- Top Right Close Button -->
+  <div class="top-right">
+    <div class="btn" id="highScoreCloseBtn">
+    <button id="close-btn" style="background-color: transparent; border: none;"> <img src="Ui/close_button.png" alt="Close" ></button> 
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="score-panel">
+      <img src="Ui/High_score_panel.png" class="high-score-badge" alt="High Score Badge">
+      <div class="score-number" id="highScoreValue">0</div><div class="high-score">
+      <!-- <div class="high-score-label">High score:</div>
+      <div class="high-score-number" id="highScoreSubValue">0</div> -->
+      </div>
+      <div class="resources">
+        <div class="resource">
+          <img src="Ui/diamond_panel.png" alt="Diamond Panel">
+          <span id="highScoreDiamondValue">0</span>
+        </div>
+        <div class="resource">
+          <img src="Ui/coin_panel.png" alt="Coin Panel">
+          <span id="highScoreCoinValue">0</span>
+        </div>
+      </div>
+      <div class="coin-multiplier">2x Your Coin</div>
+      <button class="ad-button" id="doubleCoinsAdBtn">
+        <img src="Ui/ad_button.png" alt="Ad Button">
+      </button>
+    </div>
+  </div>
+  <!-- Script to load data and handle buttons -->
+    <!-- Script to load data and handle buttons -->
+    <script>
+    // Use a unique sound object for this screen if needed, e.g., gameOverSound
+    const musicSound = new Audio('sounds/High_score.mp3'); // Or 'sounds/High_score.mp3'
+
+        CrazyGames.SDK.init();
+
+    // Get all the UI elements
+    const musicBtn = document.getElementById('highScoreMusicBtn'); // Or 'highScoreMusicBtn'
+    const soundBtn = document.getElementById('highScoreSoundBtn'); // Or 'highScoreSoundBtn'
+    const closeBtn = document.getElementById('highScoreCloseBtn'); // Or 'highScoreCloseBtn'
+    const adBtn = document.getElementById('doubleCoinsAdBtn');
+
+    // --- CORRECTED MUTE LOGIC ---
+    let isMusicMuted = localStorage.getItem('isMusicMuted') === 'true';
+    let isSfxMuted = localStorage.getItem('isSfxMuted') === 'true'; // Although SFX aren't used here, we track the state
+
+    function applyMuteStates() {
+        musicSound.muted = isMusicMuted;
+        musicBtn.classList.toggle('muted', isMusicMuted);
+        soundBtn.classList.toggle('muted', isSfxMuted);
+        if (!isMusicMuted && musicSound.paused) {
+            musicSound.play();
+        }
+    }
+    
+    // --- Load data from localStorage ---
+    const sessionScore = parseInt(localStorage.getItem('sessionScore') || '0');
+    const sessionCoins = parseInt(localStorage.getItem('sessionCoins') || '0');
+    const sessionDiamonds = parseInt(localStorage.getItem('sessionDiamonds') || '0');
+    const highScore = parseInt(localStorage.getItem('highScores') || '0');
+
+    // --- Populate the UI ---
+ document.getElementById('highScoreValue').textContent = sessionScore;
+        // document.getElementById('highScoreSubValue').textContent = sessionScore; // High score is the session score
+        document.getElementById('highScoreCoinValue').textContent = sessionCoins;
+        document.getElementById('highScoreDiamondValue').textContent = sessionDiamonds;
+
+    // --- Music and Sound Control ---
+    musicSound.loop = true;
+    applyMuteStates(); // Set initial state
+
+    
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            music.muted = true;
+        } else {
+            music.muted = localStorage.getItem('isMusicMuted') === 'true';
+        }
+    });
+    
+    musicBtn.addEventListener('click', () => {
+        isMusicMuted = !isMusicMuted;
+        localStorage.setItem('isMusicMuted', isMusicMuted);
+        applyMuteStates();
+    });
+    
+    soundBtn.addEventListener('click', () => { 
+        isSfxMuted = !isSfxMuted;
+        localStorage.setItem('isSfxMuted', isSfxMuted);
+        applyMuteStates();
+    });
+    
+
+    // --- Original Button functionality ---
+    closeBtn.addEventListener('click', () => {
+        // 'replace' must be called as a function with ()
+        window.location.replace('index.html');
+    });
+
+    // --- NEW, FUNCTIONAL "Double Coins" Ad Logic ---
+adBtn.addEventListener('click', () => {
+    console.log("Google H5: Requesting Rewarded Ad for Double Coins...");
+    
+    adBtn.disabled = true;
+    adBtn.innerHTML = 'Loading Ad...';
+
+    adReward({
+        beforeReward: (showAdFn) => { showAdFn(); },
+        rewardGranted: () => {
+            console.log("Reward granted for Double Coins!");
+            
+            // Your existing reward logic
+            const sessionCoins = parseInt(localStorage.getItem('sessionCoins') || '0');
+            let totalSavedCoins = parseInt(localStorage.getItem('savedCoins') || '0');
+            totalSavedCoins += sessionCoins;
+            localStorage.setItem('savedCoins', totalSavedCoins);
+
+            const coinValueElement = document.getElementById('gameOverCoinValue'); // or highScoreCoinValue
+            coinValueElement.textContent = sessionCoins * 2;
+            adBtn.innerHTML = 'Coins Doubled!';
+        },
+        afterReward: () => {
+            console.log("Double coins ad flow finished.");
+            // If the button is still disabled (i.e., no reward was granted), re-enable it.
+            if (adBtn.disabled && adBtn.innerHTML !== 'Coins Doubled!') {
+                adBtn.disabled = false;
+                adBtn.innerHTML = '<img src="Ui/ad_button.png" alt="Ad Button">';
+            }
+        }
+    });
+});
+</script>
+<script>
+    document.getElementById('close-btn').addEventListener('click', () => {
+        window.location.replace('index.html');
+    });
+    
+    // Also add the right-click disable code here if you haven't already
+    window.addEventListener('contextmenu', e => e.preventDefault());
+</script>
+</body>
+</html>

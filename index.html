@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Wars</title>
+    <!-- Styles from both original files -->
+    <link rel="stylesheet" href="css/front.css">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
+</head>
+<body>
+
+
+    <!-- ===== NEW LOADING OVERLAY ===== -->
+    <div id="loading-overlay" style="display: none;">
+        <div class="loading-text">Loading...</div>
+    </div>
+
+    <!-- Audio player for background music -->
+    <audio id="background-music" src="sounds/music.mp3" loop></audio>
+    <!-- ... the rest of your body content ... -->
+
+
+
+    <!-- Audio player for background music -->
+    <audio id="background-music" src="sounds/music.mp3" loop></audio>
+
+    <!-- ===== MAIN MENU (from front.html) ===== -->
+    <div id="menu-container">
+        <!-- Top Bar -->
+        <div id="top-bar">
+            <div id="menu-controls-desktop">
+                <button class="button" style="background-image: url('Ui/list_button.png');"></button>
+                
+                <button class="button" id="shopButtonDesktop" style="background-image: url('Ui/shop_button.png');"></button>
+                
+                
+                <button class="button" id="infoButtonDesktop" style="background-image: url('Ui/info_button.png');"></button>
+              
+            </div>
+            <div class="currency-container">
+                <div class="stat-panel" style="background-image: url('Ui/diamond_panel.png');">
+                    <label id="diamond-label">0</label>
+                </div>
+                <div class="stat-panel" style="background-image: url('Ui/coin_panel.png');">
+                    <label id="coin-label">0</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Content -->
+        <div id="center-content">
+            <img id="logo" src="Ui/logo.png" alt="Space Wars Logo">
+            <!-- Play button now handled by script to show the game -->
+            <a href="#" id="play-button-large"></a>
+        </div>
+
+        <!-- Bottom Bar (Mobile Only) -->
+        <div id="menu-controls-mobile">
+            <button class="button" style="background-image: url('Ui/list_button.png');"></button>
+            
+            <button class="button" id="shopButtonMobile" style="background-image: url('Ui/shop_button.png');"></button>
+            
+           <button class="button" id="infoButtonMobile" style="background-image: url('Ui/info_button.png');"></button>
+            
+        </div>
+    </div>
+
+    <!-- ===== GAME SCREEN (from index.html) - Hidden Initially ===== -->
+    <div id="game-container" style="display: none;">
+        <div id="gameDiv">
+            <!-- The game's visual layers -->
+            <div id="bgLayer1" class="bg-layer"></div>
+            <div id="bgLayer2" class="bg-layer"></div>
+            <img id="shieldBubble" src="images/bubble.png" style="display: none;">
+
+            <!-- UI Structure -->
+            <div id="ui-top">
+                <!-- Left side controls -->
+                <div id="ui-controls">
+                    <button id="musicBtn" class="ui-button"></button>
+                    <button id="soundBtn" class="ui-button"></button>
+                    <button id="pauseBtn" class="ui-button"></button>
+                </div>
+
+                <!-- Right side stats -->
+                <div id="ui-stats">
+                    <div id="currency-container">
+                        <div id="diamond-container" class="stat-panel">
+                            <label id="diamondCountLabel">0</label>
+                        </div>
+                        <div id="coin-container" class="stat-panel">
+                            <label id="coinCountLabel">0</label>
+                        </div>
+                    </div>
+                    <div id="lives-score-container">
+                        <div id="livesDiv">
+                            <!-- Hearts will be added by JS -->
+                        </div>
+                        <span id="scoreLabel">0</span>
+                    </div>
+                </div>
+            </div>
+
+                           <!-- ================= FINAL CORRECTED REVIVAL POPUPS ================= -->
+            <div id="revival-popup-1" class="revival-popup" style="display: none;">
+                <div class="revival-timer">
+                    <span id="revival-timer-label">6</span> sec
+                </div>
+                <!-- THIS DIV IS NOW ADDED BACK to show the "+1" -->
+                <div class="revival-offer-text"></div>
+                <div class="revival-buttons">
+                    <button id="revive-diamond-btn">
+                        
+                        <span>2</span>
+                    </button>
+                    <button id="revive-ad-btn">
+                
+                        <span></span>
+                    </button>
+                
+                </div>
+                <div class="nothing"></div>
+            </div>
+
+            <div id="revival-popup-2" class="revival-popup" style="display: none;">
+                 <!-- THIS DIV IS NOW ADDED BACK to show the "+2" -->
+                <div class="revival-offer-text">2</div>
+                <p class="bonus-offer-subtext">BONUS LIVES!</p>
+                <div class="revival-buttons">
+                    <button id="bonus-diamond-btn">
+                      
+                        <span>5</span>
+                    </button>
+                    <button id="bonus-ad-btn">
+                       
+                        <span></span>
+                    </button>
+                </div>
+                <button id="skip-bonus-btn"></button>
+            </div>
+            <!-- ======================= REVIVAL POPUPS END ======================= -->              
+
+                           <!-- ======================= REVIVAL POPUPS END ======================= -->
+
+            <div id="gameOver"></div>
+        </div>
+        <!-- ================= NEW GAME OVER SCREEN STRUCTURE ================= -->
+<div id="gameOverScreen" style="display: none;">
+    <div id="gameOverBackground"></div>
+    <div id="gameOverContent">
+        <div id="gameOverTopBar">
+            <div id="gameOverControls">
+                <button id="gameOverMusicBtn" class="ui-button"></button>
+                <button id="gameOverSoundBtn" class="ui-button"></button>
+            </div>
+            <button id="gameOverCloseBtn" class="ui-button"></button>
+        </div>
+                <img src="Ui/game_over.png" id="gameOverTitleDesktop" alt="Game Over" style="filter: drop-shadow(0 0 12px white);">
+                
+                
+        <div id="gameOverMain">
+
+              
+            <!-- Desktop Score Panel -->
+            <div id="gameOverScorePanel">
+                <span class="score-title">Your Score</span>
+                <span id="gameOverScoreValue" class="score-value">0</span>
+                <span class="score-title">High score:</span>
+                <span id="gameOverHighScoreValue" class="score-value">0</span>
+            </div>
+
+            <!-- Rewards Section (for both mobile and desktop) -->
+            <div id="gameOverRewards">
+
+                <img src="Ui/High_score_panel.png" id="highScoreTitle" alt="High Score">
+              
+                <!-- Mobile-only score display -->
+                <div id="gameOverMobileScore">
+                    <span id="gameOverMobileScoreValue">0</span>
+                    <span class="score-title">High score: <span id="gameOverMobileHighScoreValue">0</span></span>
+                </div>
+
+                <div id="gameOverCurrency">
+                    <div class="stat-panel">
+                        <label id="gameOverDiamondValue">0</label>
+                    </div>
+                    <div class="stat-panel">
+                        <label id="gameOverCoinValue">0</label>
+                    </div>
+                </div>
+                <span id="double-coin-text">2x Your Coin</span>
+                <button id="doubleCoinsAdBtn"></button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ======================= END GAME OVER SCREEN ======================= -->
+    </div>
+
+
+
+
+
+
+    <!-- ================= NEW SETTINGS POPUP STRUCTURE ================= -->
+<div id="settingsPopup" style="display: none;">
+    <button id="closeSettingsBtn" class="button"></button>
+    <div class="popup-buttons-grid">
+        
+        <button id="soundBtnPopup" class="popup-btn"></button>
+        <button id="musicBtnPopup" class="popup-btn"></button>
+    </div>
+</div>
+<!-- ======================= END POPUP STRUCTURE ======================= -->
+
+
+
+
+
+    <!-- ===== SCRIPTS ===== -->
+   <script>
+// This wrapper ensures the script only runs after the entire page is loaded,
+// which is the most important fix for the "game not working" problem.
+document.addEventListener('DOMContentLoaded', function() {
+
+     CrazyGames.SDK.init(); // line to initialize the SDK
+
+    // --- UI ELEMENTS ---
+    const music = document.getElementById('background-music');
+    const playButton = document.getElementById('play-button-large');
+    const settingsPopup = document.getElementById('settingsPopup');
+    const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+    const musicBtnPopup = document.getElementById('musicBtnPopup');
+    const soundBtnPopup = document.getElementById('soundBtnPopup');
+    const settingsBtns = document.querySelectorAll('.button[style*="list_button.png"]');
+
+    // --- GLOBAL MUTE STATE (The Single Source of Truth) ---
+    let isMusicMuted = localStorage.getItem('isMusicMuted') === 'true';
+    let isSfxMuted = localStorage.getItem('isSfxMuted') === 'true';
+
+    // --- A single function to apply the saved mute settings ---
+    function applyMuteStates() {
+        music.muted = isMusicMuted;
+        musicBtnPopup.classList.toggle('muted', isMusicMuted);
+        soundBtnPopup.classList.toggle('muted', isSfxMuted);
+
+        if (!isMusicMuted && music.paused) {
+            music.play().catch(error => {
+                console.log("Music autoplay blocked by browser. User must click the page to start it.");
+                document.body.addEventListener('click', () => music.play(), { once: true });
+            });
+        } else if (isMusicMuted) {
+            music.pause();
+        }
+    }
+
+    // --- INITIALIZATION ---
+    // Load currency and music state when the page is ready.
+    const diamondLabel = document.getElementById('diamond-label');
+    const coinLabel = document.getElementById('coin-label');
+    diamondLabel.textContent = localStorage.getItem('savedDiamonds') || '0';
+    coinLabel.textContent = localStorage.getItem('savedCoins') || '0';
+    
+    const savedTime = parseFloat(localStorage.getItem('musicTime') || '0');
+    music.currentTime = savedTime;
+    applyMuteStates();
+
+    // --- Mute on Minimize ---
+document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+        music.muted = true;
+    } else {
+        music.muted = localStorage.getItem('isMusicMuted') === 'true';
+    }
+});
+
+    // --- GAME START LOGIC ---
+ // --- REVISED GAME START LOGIC ---
+playButton.addEventListener('click', function(event) {
+    event.preventDefault();
+
+    const loadingOverlay = document.getElementById('loading-overlay');
+    
+    // 1. Immediately show our custom loading screen
+    loadingOverlay.style.display = 'flex';
+    // Also, tell the SDK we are loading
+    CrazyGames.SDK.game.loadingStart();
+
+    // 2. Define all the images needed for the game to start
+    const criticalImages = [
+        'images/background.png',
+        'images/plane-c.png', // The default player ship
+        'images/enemy-1.png', // The first enemy they will see
+        'images/enemy-2.png',
+        'images/bullet.png',
+        'images/explosion.png',
+        'Ui/heart_full.png',
+        'Ui/diamond_button.png',
+        'Ui/revival_popup.png',
+        'Ui/popup_2.png',
+        'Ui/ad_button.png',
+        'Ui/skip.png'
+        // Add any other image that MUST be visible on frame one
+    ];
+
+    let imagesLoaded = 0;
+
+    function onImageLoad() {
+        imagesLoaded++;
+        // 3. Check if all critical images are loaded
+        if (imagesLoaded >= criticalImages.length) {
+            // YES! All assets are ready. Now we can start the game.
+            
+            // Save music state
+            localStorage.setItem('musicTime', music.currentTime);
+            music.pause();
+
+            // Switch from menu to game view
+            const menuContainer = document.getElementById('menu-container');
+            const gameContainer = document.getElementById('game-container');
+            menuContainer.style.display = 'none';
+            gameContainer.style.display = 'flex';
+            
+            // Load and run the main game script
+            const gameScript = document.createElement('script');
+            gameScript.src = 'js/main.js';
+            document.body.appendChild(gameScript);
+        }
+    }
+
+    // 4. Loop through the image list and start loading them
+    criticalImages.forEach(src => {
+        const img = new Image();
+        img.onload = onImageLoad;
+        img.onerror = onImageLoad; // Important: count failed loads too so we don't get stuck
+        img.src = src;
+    });
+});
+    
+
+    // --- NEW NAVIGATION LOGIC ---
+document.getElementById('infoButtonDesktop').addEventListener('click', () => {
+    window.location.replace('info.html');
+});
+document.getElementById('shopButtonDesktop').addEventListener('click', () => {
+    window.location.replace('shop.html');
+});
+// Add these if you have mobile buttons with different IDs
+document.getElementById('infoButtonMobile').addEventListener('click', () => { window.location.replace('info.html'); });
+document.getElementById('shopButtonMobile').addEventListener('click', () => { window.location.replace('shop.html'); });
+
+    // --- SETTINGS POPUP LISTENERS ---
+    settingsBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            settingsPopup.style.display = 'flex';
+        });
+    });
+
+    closeSettingsBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        settingsPopup.style.display = 'none';
+    });
+
+    musicBtnPopup.addEventListener('click', (e) => {
+        e.preventDefault();
+        isMusicMuted = !isMusicMuted;
+        localStorage.setItem('isMusicMuted', isMusicMuted);
+        applyMuteStates();
+    });
+
+    soundBtnPopup.addEventListener('click', (e) => {
+        e.preventDefault();
+        isSfxMuted = !isSfxMuted;
+        localStorage.setItem('isSfxMuted', isSfxMuted);
+        applyMuteStates();
+    });
+
+    // --- NEW: Handle browser minimizing/tab switching ---
+
+});
+
+</script>
+    <script>
+    // --- Your existing script code ---
+
+    // Add this line to disable the right-click menu everywhere
+    window.addEventListener('contextmenu', function (e) { 
+        e.preventDefault(); 
+    }, false);
+</script>
+</body>
+</html>
